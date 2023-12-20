@@ -8,8 +8,22 @@ import Splider from './components/slider';
 
 
 function App() {
-  const [goal, setGoal ] = useState(69)
+
+  const search = window.location.search // value of window.location.search
+  const params = new URLSearchParams(search);
+
+  let targetNum
+  if (typeof parseInt(params.get('x')) === 'number') {
+    targetNum = parseInt(params.get('x'))
+  }
+  // console.log(params.get('x'));
+  // for (const [key, value] of params) {
+  //   console.log(key, 'is', value);
+  // }
+
+  const [goal, setGoal ] = useState(targetNum || 69)
   const [ calcNumber, setCalcNumber] = useState(0)
+  const [ binAsString, setBinAsString ] = useState('')
 
   const howManyPowersOf2 = (num) => {
     console.log(num)
@@ -30,13 +44,70 @@ function App() {
   const [binArray, setBinArray] = useState([]);
 
   useEffect(() => {
-    const initialArray = new Array(howManyPowersOf2(69)).fill(0);
+    console.log('useEffect is running')
+    const binNeeded = howManyPowersOf2(goal)
+    const initialArray = new Array(binNeeded).fill(0);
     setBinArray(initialArray);
+    setBinAsString(initialArray.reverse().join(''))
   }, [])
+
+
+  const updateBinArray = (index, value) => {
+    setBinArray(prevArray => {
+      const newArray = [...prevArray];
+      newArray[index] = value;
+
+      setCalcNumber(oldNum => {
+        let resultNum = 0
+        newArray.forEach((el, i) => {
+          console.log('this is el i', el, i)
+          if (el) {
+            resultNum += 2**i
+          }
+        })
+        return resultNum
+      })
+
+      setBinAsString(oldString => {
+        let newString = ''
+        newArray.forEach((el, i) => {
+          newString = el + newString
+        })
+        return newString
+      })
+
+      return newArray;
+    });
+    // setCalcNumber(oldNum => {
+    //   let resultNum = 0
+    //   const newArray = [...binArray];
+    //   newArray[index] = value;
+    //   newArray.forEach((el, i) => {
+    //     console.log('this is el i', el, i)
+    //     if (el) {
+    //       resultNum += 2**i
+    //     }
+    //   })
+    //   return resultNum
+    // })
+  };
+
+  let resultNum = 0
+  binArray.forEach((el, i) => {
+    console.log('this is el i', el, i)
+    if (el) {
+      resultNum += 2**i
+    }
+  })
+
+
+
+
 
   const bins = []
   for (let i = 0; i < binArray.length; i++) {
-    bins.push(<Splider binArray={binArray} index={i} key={i} calcNumber={calcNumber} setBinArray={setBinArray} setCalcNumber={setCalcNumber}></Splider>)
+    console.log(binArray)
+    bins.push(<Splider binArray={binArray} index={i} key={i} updateBinArray={updateBinArray}></Splider>)
   }
 
 
@@ -44,7 +115,8 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>{calcNumber}</h1>
-        <div style={{display: 'flex', flexDirection : 'row-reverse'}}>
+        <h3>{binAsString}</h3>
+        <div style={{display: 'flex', flexDirection : 'row-reverse', alignItems : 'center', justifyContent : 'center', maxWidth : '80%'}}>
           {bins}
         </div>
       </header>

@@ -7,7 +7,7 @@ import { useRef, useEffect, useState } from 'react';
 
 
 const Splider = (props) => {
-  const {binArray, index, setBinArray, updateBinArray, getBinArray} = props
+  const {binArray, index, updateBinArray} = props
   // const newBinArray = [...binArray]
   console.log('binArray at index', binArray, index)
 
@@ -24,32 +24,15 @@ const Splider = (props) => {
   const handleMoved = (splide, prev, next) => {
     console.log(splide, "prev:", prev, "next:", next)
     console.log("old bin array", binArray)
-    // let newBinArray = [...binArray];
-    // console.log("new spread bin array", newBinArray)
-    let newBinArray = [...binArray]
-    newBinArray[index] = prev ? 1 : 0
-    setBinArray(newBinArray);
-    // if (prev) {
-    //   let newBinArray = [...binArray]
-    //   newBinArray[index] = 1
-    //   console.log('new bin array', newBinArray)
-    //   setBinArray(newBinArray)
-    //   setResultingNum(2**index)
-    // } else {
-    //   let newBinArray = [...binArray]
-    //   newBinArray[index] = 0
-    //   console.log('new bin array', newBinArray)
-    //   setBinArray(newBinArray)
-    //   setResultingNum(0)
-    // }
-    // console.log(splide);  // Outputs the index of the current slide
+    updateBinArray(index, prev ? 1 : 0);
+    setResultingNum(prev ? 2**index : 0)
   };
 
 
 
   return (
     <div style={{display : 'flex', flexDirection : 'column'}}>
-      <h2>{resultingNum}</h2>
+      <h4>{resultingNum}</h4>
       <Splide 
           // ref={splideRef}
           onMove={ ( splide, prev, next ) => handleMoved(splide, prev, next) }
