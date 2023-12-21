@@ -48,6 +48,7 @@ function App() {
 
   useEffect(() => {
     console.log('useEffect is running with goal number', goal)
+    document.title = 'looo.lol - a binary math site';
     const binNeeded = howManyPowersOf2(goal)
     const initialArray = new Array(binNeeded).fill(0);
     setBinArray(initialArray);
